@@ -1,115 +1,192 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-void main() {
-  runApp(const MyApp());
+import 'package:flutter/material.dart';
+// import 'package:MovoLink/views/welcome.dart';
+// import 'package:MovoLink/views/deviceInfo.dart';
+// import 'package:MovoLink/views/deviceList.dart';
+// import 'package:MovoLink/views/deviceSearch.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
+import 'package:fluro/fluro.dart';
+import 'utils/application.dart';
+import 'utils/routers.dart';
+
+
+
+// import 'package:MovoLink/wave.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp, // 竖屏 Portrait 模式
+      DeviceOrientation.portraitDown,
+      // DeviceOrientation.landscapeLeft, // 横屏 Landscape 模式
+      // DeviceOrientation.landscapeRight,
+    ],
+  );
+  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+  // ScreenUtil.instance = ScreenUtil(width: 750, height: 1334);
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+  MyApp() {
+    final router = new FluroRouter();
+    Routes.configureRoutes(router);
+    Application.routes = router;
+  }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      builder: (context, child){
+        return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: const Color(0xFF75a137),
+          fontFamily: 'Ubuntu',
+          textTheme: TextTheme(
+            labelLarge: TextStyle(fontSize: 18.sp),
+          ),
+        ),
+        initialRoute: 'main', //配置默认访问路径
+        home: HomePage(),
+        routes: const {
+          //需要使用context指定上下文
+          // '/wave': (context) => WithBuilder(), //
+          // '/main': (context) => HomePage(), //
+          // '/welcome': (context) => welcome(), //
+          // '/deviceInfo': (context) => DeviceInfo(), //
+          // '/deviceList': (context) => DeviceList(), //
+          // '/deviceSearch': (context) => DevieSearch(), //
+        },
+      );
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+//配置路由规则
+//final routes = {
+//  '/': (context) => Main(),
+//  '/StockManager': (context) => StockManager(),//入出库
+////  '/page2': (context) => Page2(),
+////  '/page3': (context) => Page3(),
+//};
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class HomePage extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<StatefulWidget> createState() {
+    return ListState();
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+final userType = 'newUser';
+void _toNext(BuildContext context, userFlag) {
+  if (userFlag == 'newUser') {
+    // Navigator.pushNamed(context, '/welcome');
+    Application.routes
+        .navigateTo(context, 'welcome', transition: TransitionType.fadeIn);
+    // FluroRouter()
+    //     .navigateTo(context, "welcome", transition: TransitionType.fadeIn);
+  }
+}
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+class ListState extends State<HomePage> {
+  late Timer _timer;
+  int count = 2;
+  startTime() async {
+    //设置启动图生效时间
+    var _duration = new Duration(seconds: 1);
+    new Timer(_duration, () {
+      // 空等1秒之后再计时
+      _timer = new Timer.periodic(const Duration(milliseconds: 100), (v) {
+        count--;
+        if (count == 0) {
+          // Navigator.pushNamed(context, '/welcome');
+
+          _toNext(context, userType);
+        } else {
+          setState(() {});
+        }
+      });
+      return;
     });
   }
 
   @override
+  void initState() {
+    //页面初始化
+    super.initState();
+    startTime();
+  }
+
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+      // appBar: AppBar(title: Text('Movolink页面列表'),),
+      // body: GridView.count(
+      //     padding: EdgeInsets.all(5.0),
+      //     //一行多少个
+      //     crossAxisCount: 2,
+      //     //滚动方向
+      //     scrollDirection: Axis.vertical,
+      //     // 左右间隔
+      //     crossAxisSpacing: 5.0,
+      //     // 上下间隔
+      //     mainAxisSpacing: 5.0,
+      //     //宽高比
+      //     childAspectRatio: 2 / 2,
+      //     //设置itemView
+      //     children: initListWidget(context,MenuNun),
+      // )
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(padding: EdgeInsets.only(right: 9.5.sp)),
+          Lottie.asset(
+            'assets/Mobilo/G.json',
+            // alignment: Alignment(10,0),
+            width: 200.sp,
+            height: 400.sp,
+            // repeat: false
+          ),
+          // Lottie.asset(
+          //   'assets/Mobilo/P.json',
+          //   // alignment: Alignment(10,0),
+          //   width: 100.sp,
+          //   height: 200.sp,
+          //   // repeat: false
+          // ),
+          // Lottie.asset(
+          //   'assets/Mobilo/T.json',
+          //   // alignment: Alignment(10,0),
+          //   width: 100.sp,
+          //   height: 200.sp,
+          //   // repeat: false
+          // ),
+        ],
+      )),
     );
   }
+}
+
+
+
+
+void _goToPage(BuildContext context, title) {
+  if (title == '1') {
+    Navigator.pushNamed(context, '/wave');
+  } else if (title == 'Welcome') {
+    Navigator.pushNamed(context, '/welcome');
+  } else if (title == '设备检索') {
+    Navigator.pushNamed(context, '/deviceSearch');
+  } else if (title == '设备列表') {
+    Navigator.pushNamed(context, '/deviceList');
+  }
+  print({new DateTime.now()});
+  return;
 }
