@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // import 'package:MovoLink/views/welcome.dart';
 // import 'package:MovoLink/views/deviceInfo.dart';
 // import 'package:MovoLink/views/deviceList.dart';
-// import 'package:MovoLink/views/deviceSearch.dart';
+import 'package:letsgpt/views/autoTalks.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
@@ -26,7 +26,7 @@ Future<void> main() async {
       // DeviceOrientation.landscapeRight,
     ],
   );
-  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);
   // ScreenUtil.instance = ScreenUtil(width: 750, height: 1334);
   runApp(MyApp());
 }
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
           // '/welcome': (context) => welcome(), //
           // '/deviceInfo': (context) => DeviceInfo(), //
           // '/deviceList': (context) => DeviceList(), //
-          // '/deviceSearch': (context) => DevieSearch(), //
+          // '/autoTalks': (context) => talkToGpt(), //
         },
       );
       },
@@ -148,7 +148,7 @@ class ListState extends State<HomePage> {
         children: [
           Padding(padding: EdgeInsets.only(right: 9.5.sp)),
           Lottie.asset(
-            'assets/Mobilo/G.json',
+            'assets/status/loadeggs.json',
             // alignment: Alignment(10,0),
             width: 200.sp,
             height: 400.sp,

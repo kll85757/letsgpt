@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
 // import 'package:MovoLink/views/StockManager.dart';
 import 'package:letsgpt/views/welcome.dart';
-// import 'package:MovoLink/views/deviceInfo.dart';
+import 'package:letsgpt/views/talkToGpt.dart';
 // import 'package:MovoLink/views/deviceList.dart';
 // import 'package:MovoLink/views/deviceSearch.dart';
 
@@ -15,9 +15,9 @@ var welcomeHandler = Handler(
 );
 
 // 检索页
-var searchHandler = Handler(
+var talkToGptHandler = Handler(
   handlerFunc: (BuildContext, Map<String, List<String>> params) {
-    // return DevieSearch();
+    return messageWindow();
   },
 );
 
