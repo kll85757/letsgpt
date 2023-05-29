@@ -14,7 +14,7 @@ Future getUserInfo() async {
   }
 }
 
-//把扫描出来的バーコード发给后端
+//
 Future sendBarcode() async {
   try {
     Response response = await Dio().get("http://www.google.com");
@@ -28,14 +28,17 @@ Future sendBarcode() async {
 }
 
 //向GPT3.5提问
-Future talkToGpt() async {
+Future<String> talkToGpt(String msg) async {
+  Map<String,dynamic> messageFromUser = Map();
+  messageFromUser['id']="202305111801HANK";
+  messageFromUser['content']=msg;
   try {
-    Response response = await Dio().get("http://www.google.com");
+    Response response = await Dio().post("https://ai.fhmuseum.cn/chatgpt/talk",data: messageFromUser);
     print(response);
     return response.data;
   } catch (e) {
     print(e);
-    return e;
+    return e as String;
   }
 }
 
