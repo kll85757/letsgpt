@@ -30,7 +30,7 @@ Future sendBarcode() async {
 //向GPT3.5提问
 Future<String> talkToGpt(String msg) async {
   Map<String,dynamic> messageFromUser = Map();
-  messageFromUser['id']="202305111801HANK";
+  messageFromUser['id']="1900829293939393rotk9008";
   messageFromUser['content']=msg;
   try {
     Response response = await Dio().post("https://ai.fhmuseum.cn/chatgpt/talk",data: messageFromUser);
@@ -38,7 +38,14 @@ Future<String> talkToGpt(String msg) async {
     return response.data;
   } catch (e) {
     print(e);
-    return e as String;
+      String errorMessage;
+    if (e is DioError) {
+      errorMessage = e.response.toString();
+    } else {
+      errorMessage = e.toString();
+    }
+    print(errorMessage);
+    return errorMessage;
   }
 }
 

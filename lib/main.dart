@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
             labelLarge: TextStyle(fontSize: 18.sp),
           ),
         ),
-        initialRoute: 'main', //配置默认访问路径
+        initialRoute: 'main', //配置默认访问路径 
         home: HomePage(),
         routes: const {
           //需要使用context指定上下文

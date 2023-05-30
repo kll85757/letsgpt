@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:letsgpt/utils/setting.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class MsgModel {
   MsgModel(
@@ -45,7 +46,8 @@ getTitleText(String title) => Text(
       ),
     );
 
-getSenderView(CustomClipper clipper, BuildContext context , String msg) => ChatBubble(
+getSenderView(CustomClipper clipper, BuildContext context, String msg) =>
+    ChatBubble(
       clipper: ChatBubbleClipper5(type: BubbleType.sendBubble),
       alignment: Alignment.topRight,
       margin: EdgeInsets.only(top: 20),
@@ -57,24 +59,45 @@ getSenderView(CustomClipper clipper, BuildContext context , String msg) => ChatB
         ),
         child: Text(
           msg,
-          style: TextStyle(color: Colors.white,fontSize: 18,
-              decoration: TextDecoration.none,fontWeight: FontWeight.normal),
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              decoration: TextDecoration.none,
+              fontWeight: FontWeight.normal),
         ),
       ),
     );
 
-getReceiverView(CustomClipper clipper, BuildContext context, String msg) => ChatBubble(
+getReceiverView(CustomClipper clipper, BuildContext context, String msg ,int index) =>
+    ChatBubble(
       clipper: ChatBubbleClipper5(type: BubbleType.receiverBubble),
       backGroundColor: Color.fromARGB(255, 255, 255, 255),
       shadowColor: Colors.transparent,
       margin: EdgeInsets.only(top: 20),
       child: Container(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.7,
-        ),
-        child: Text(
-          msg,
-          style: TextStyle(color: Colors.black, fontSize: 18,decoration: TextDecoration.none,fontWeight: FontWeight.normal),
-        ),
-      ),
+          key: ValueKey(index),
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.7,
+          ),
+          child: AnimatedTextKit(animatedTexts: [
+            
+            TypewriterAnimatedText(
+              msg,
+              speed: const Duration(milliseconds: 100),
+              textStyle: const TextStyle(
+                fontSize: 17,
+                color: Colors.black,
+                decoration: TextDecoration.none,
+                  fontWeight: FontWeight.normal
+              ),
+            ),
+          ],
+            totalRepeatCount: 1,
+
+          )
+          // child: Text(
+          //   msg,
+          //   style: TextStyle(color: Colors.black, fontSize: 18,decoration: TextDecoration.none,fontWeight: FontWeight.normal),
+          // ),
+          ),
     );

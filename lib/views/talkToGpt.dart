@@ -106,7 +106,6 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
     } else {
       setState(() {
         _messageList.insert(0, {"type": "USER", "msg": _textController.text});
-        _textController = TextEditingController(text: '');
         dialogVisable = true;
       });
       _showBottomSide();
@@ -114,8 +113,8 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
       setState(() {
         _messageList.insert(0, {"type": "GPT", "msg": msgFromGpt});
         dialogVisable = false;
+        _textController = TextEditingController(text: '');
       });
-      
     }
   }
 
@@ -137,7 +136,8 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
         lists.add(getReceiverView(
             ChatBubbleClipper1(type: BubbleType.sendBubble),
             context,
-            item['msg']));
+            item['msg'],
+            MsgList.indexOf(item)));
       }
     }
     return lists;
@@ -147,7 +147,14 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: const CupertinoNavigationBar(
-          middle: Text('接口测试'),
+          padding: EdgeInsetsDirectional.fromSTEB(5, 0, 0, 10),
+          leading: Image(
+            alignment: Alignment.topCenter,
+            image: AssetImage('assets/images/AppIcon.png'),
+            height: 60,
+            width: 60,
+          ),
+          middle: Text('随时GPT'),
         ),
         // child: Center(
         //   child: CupertinoTextField(
@@ -162,6 +169,19 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
                 height: MediaQuery.of(context).size.height - 160.sp,
                 width: MediaQuery.of(context).size.width,
                 bottom: 60 + bottomSideH,
+                // child: ListView.builder(
+                //   key: UniqueKey(),
+                //   reverse: true,
+                //   padding: EdgeInsets.all(10.sp),
+                //   itemCount: _messageList.length,
+                //   itemBuilder: (BuildContext context, int index) {
+                //     return getReceiverView(
+                //         ChatBubbleClipper1(type: BubbleType.sendBubble),
+                //         context,
+                //         _messageList[index]["msg"],
+                //         index);
+                //   },
+                // ),
                 child: ListView(
                   reverse: true,
                   padding: EdgeInsets.all(10.sp),
@@ -236,24 +256,24 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
                     ),
                   )),
               //是否显示加载动画
-              dialogVisable ? 
-              Positioned(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                bottom: 0,
-                child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    child: Center(
-                      child: Lottie.asset('assets/status/LoopEggs.json',
-                          // alignment: Alignment(10,0),
-                          width: 100.sp,
-                          height: 200.sp,
-                          repeat: true),
-                    ),
-                    color: Color.fromARGB(43, 80, 80, 80)),
-              ):
-              Container()
+              dialogVisable
+                  ? Positioned(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      bottom: 0,
+                      child: Container(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: Lottie.asset('assets/status/LoopEggs.json',
+                                // alignment: Alignment(10,0),
+                                width: 100.sp,
+                                height: 200.sp,
+                                repeat: true),
+                          ),
+                          color: Color.fromARGB(43, 80, 80, 80)),
+                    )
+                  : Container()
             ],
           ),
         ));
