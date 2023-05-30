@@ -33,12 +33,13 @@ List<String> messageList = [];
 List<Map> _messageList = [
   {
     "type": "GPT",
-    "msg": "你好",
+    "isHistoryMsg": false,
+    "msg": "你好,可以为你做些什么？",
   },
-  {
-    "type": "USER",
-    "msg": "你好",
-  },
+  // {
+  //   "type": "USER",
+  //   "msg": "你好",
+  // },
 ];
 
 List<MsgModel>? messages;
@@ -72,20 +73,31 @@ Widget _renderItem(CountryModel itemData) {
 //   );
 // }
 
-final ScrollController _scrollController = ScrollController();
-
 class _CupertinoTextFieldExampleState extends State<messageWindow> {
   late TextEditingController _textController;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(text: '');
+    _scrollController.addListener(() {
+      setState(() {
+        _messageList[0]["isHistoryMsg"] = false;
+      });
+
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        // 到达了列表末尾，可以加载更多数据
+        // ...
+      }
+    });
   }
 
   @override
   void dispose() {
     _textController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -95,25 +107,36 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
     bottomSideH = 0;
   }
 
+  void resetListStatus() {
+    for (var item in _messageList) {
+      item['isHistoryMsg'] = false;
+    }
+  }
+
   void _showBottomSide() {
     bottomSideH = 50.sp;
   }
 
   void _sendMsgToGpt() async {
+    var msgToGpt = _textController.text;
+    resetListStatus();
     if (_textController.text == '') {
       _showBottomSide();
       return;
     } else {
       setState(() {
-        _messageList.insert(0, {"type": "USER", "msg": _textController.text});
+        _messageList.insert(
+            0, {"type": "USER", "msg": msgToGpt, "isHistoryMsg": false});
+        _textController = TextEditingController(text: '');
         dialogVisable = true;
       });
       _showBottomSide();
-      String msgFromGpt = await talkToGpt(_textController.text);
+      String msgFromGpt = await talkToGpt(msgToGpt);
+
       setState(() {
-        _messageList.insert(0, {"type": "GPT", "msg": msgFromGpt});
+        _messageList.insert(
+            0, {"type": "GPT", "msg": msgFromGpt, "isHistoryMsg": true});
         dialogVisable = false;
-        _textController = TextEditingController(text: '');
       });
     }
   }
@@ -137,7 +160,8 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
             ChatBubbleClipper1(type: BubbleType.sendBubble),
             context,
             item['msg'],
-            MsgList.indexOf(item)));
+            MsgList.indexOf(item),
+            item["isHistoryMsg"]));
       }
     }
     return lists;
@@ -147,10 +171,10 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: const CupertinoNavigationBar(
-          padding: EdgeInsetsDirectional.fromSTEB(5, 0, 0, 10),
+          padding: EdgeInsetsDirectional.fromSTEB(5, 0, 0, 8),
           leading: Image(
             alignment: Alignment.topCenter,
-            image: AssetImage('assets/images/AppIcon.png'),
+            image: AssetImage('assets/images/AppIcon3.png'),
             height: 60,
             width: 60,
           ),
@@ -184,6 +208,7 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
                 // ),
                 child: ListView(
                   reverse: true,
+                  controller: _scrollController,
                   padding: EdgeInsets.all(10.sp),
                   children: msgWidgetList(context, _messageList),
                 ),
@@ -235,8 +260,17 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
                               Container(
                                   width: 100,
                                   height: 35.sp,
-                                  child: CupertinoButton.filled(
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(25.0),
+                                      ),
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 3.sp,
+                                      )),
+                                  child: CupertinoButton(
                                     alignment: Alignment.center,
+                                    color: CupertinoColors.activeBlue,
                                     padding: EdgeInsets.all(1),
                                     borderRadius: const BorderRadius.all(
                                       Radius.circular(25.0),
@@ -265,13 +299,24 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
                           height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width,
                           child: Center(
-                            child: Lottie.asset('assets/status/LoopEggs.json',
-                                // alignment: Alignment(10,0),
-                                width: 100.sp,
-                                height: 200.sp,
-                                repeat: true),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(15.0),
+                                  ),
+                                  color: Color(0x0E111111),
+                                ),
+                                width: 150.sp,
+                                height: 150.sp,
+                                padding: EdgeInsets.all(25.sp),
+                                child:
+                                    Lottie.asset('assets/status/LoopEggs.json',
+                                        // alignment: Alignment(10,0),
+                                        width: 60.sp,
+                                        height: 60.sp,
+                                        repeat: true)),
                           ),
-                          color: Color.fromARGB(43, 80, 80, 80)),
+                          color: Color(0x74C1CDE1)),
                     )
                   : Container()
             ],

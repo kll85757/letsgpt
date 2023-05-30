@@ -50,7 +50,7 @@ getSenderView(CustomClipper clipper, BuildContext context, String msg) =>
     ChatBubble(
       clipper: ChatBubbleClipper5(type: BubbleType.sendBubble),
       alignment: Alignment.topRight,
-      margin: EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 20),
       shadowColor: Colors.transparent,
       backGroundColor: mainBlue,
       child: Container(
@@ -59,7 +59,7 @@ getSenderView(CustomClipper clipper, BuildContext context, String msg) =>
         ),
         child: Text(
           msg,
-          style: TextStyle(
+          style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
               decoration: TextDecoration.none,
@@ -68,36 +68,54 @@ getSenderView(CustomClipper clipper, BuildContext context, String msg) =>
       ),
     );
 
-getReceiverView(CustomClipper clipper, BuildContext context, String msg ,int index) =>
+getReceiverView(CustomClipper clipper, BuildContext context, String msg,
+        int index, bool isHistoryMsg) =>
     ChatBubble(
       clipper: ChatBubbleClipper5(type: BubbleType.receiverBubble),
       backGroundColor: Color.fromARGB(255, 255, 255, 255),
       shadowColor: Colors.transparent,
       margin: EdgeInsets.only(top: 20),
       child: Container(
-          key: ValueKey(index),
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.7,
-          ),
-          child: AnimatedTextKit(animatedTexts: [
-            
-            TypewriterAnimatedText(
-              msg,
-              speed: const Duration(milliseconds: 100),
-              textStyle: const TextStyle(
-                fontSize: 17,
-                color: Colors.black,
-                decoration: TextDecoration.none,
-                  fontWeight: FontWeight.normal
-              ),
-            ),
-          ],
-            totalRepeatCount: 1,
-
-          )
-          // child: Text(
-          //   msg,
-          //   style: TextStyle(color: Colors.black, fontSize: 18,decoration: TextDecoration.none,fontWeight: FontWeight.normal),
-          // ),
-          ),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.7,
+        ),
+        child: Row(children: [
+          isHistoryMsg
+              ? Container(
+                  key: ValueKey(index),
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7,
+                  ),
+                  child: AnimatedTextKit(
+                    isRepeatingAnimation: false,
+                    animatedTexts: [
+                      TypewriterAnimatedText(
+                        msg,
+                        speed: const Duration(milliseconds: 100),
+                        textStyle: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            decoration: TextDecoration.none,
+                            fontWeight: FontWeight.normal),
+                      ),
+                    ],
+                    totalRepeatCount: 1,
+                  ))
+              : Container(
+                  key: ValueKey(index),
+                  
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7,
+                  ),
+                  child: Text(
+                    msg,
+                    style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                        decoration: TextDecoration.none,
+                        fontWeight: FontWeight.normal),
+                  ),
+                )
+        ]),
+      ),
     );
