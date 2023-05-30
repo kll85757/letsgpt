@@ -301,22 +301,30 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
                           child: Center(
                             child: Container(
                                 decoration: BoxDecoration(
+                                  // border: Border.all(width: 1,color: Color(0x20111111)),
+                                  // boxShadow: [
+                                  //   BoxShadow(
+                                  //     color: Color.fromARGB(10, 0, 0, 0),
+                                  //     offset: new Offset(0, 0),
+                                  //     blurRadius: 5,
+                                  //   )
+                                  // ],
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15.0),
+                                    Radius.circular(5.0),
                                   ),
-                                  color: Color(0x0E111111),
+                                  color: Color(0x0D111111),
                                 ),
-                                width: 150.sp,
-                                height: 150.sp,
-                                padding: EdgeInsets.all(25.sp),
+                                width: 135.sp,
+                                height: 135.sp,
+                                padding: EdgeInsets.all(30.sp),
                                 child:
                                     Lottie.asset('assets/status/LoopEggs.json',
                                         // alignment: Alignment(10,0),
-                                        width: 60.sp,
-                                        height: 60.sp,
+                                        width: 45.sp,
+                                        height: 45.sp,
                                         repeat: true)),
                           ),
-                          color: Color(0x74C1CDE1)),
+                          color: Color(0x00C1CDE1)),
                     )
                   : Container()
             ],
