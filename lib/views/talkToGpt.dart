@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -9,9 +11,13 @@ import 'package:letsgpt/utils/webService.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:lottie/lottie.dart';
+import 'package:letsgpt/utils/application.dart';
 // ignore: depend_on_referenced_packages
 
 /// Flutter code sample for [CupertinoTabScaffold].
+
+final width = window.physicalSize.width;
+final height = window.physicalSize.height;
 
 class messageWindow extends StatefulWidget {
   @override
@@ -85,12 +91,12 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
       setState(() {
         _messageList[0]["isHistoryMsg"] = false;
       });
+      // 到达了列表末尾，可以加载更多数据
 
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        // 到达了列表末尾，可以加载更多数据
-        // ...
-      }
+      // if (_scrollController.position.pixels ==
+      //     _scrollController.position.maxScrollExtent) {
+
+      // }
     });
   }
 
@@ -143,6 +149,11 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
 
   final _focusNode = FocusNode();
 
+  void _toSubPlan(){
+    Application.routes
+        .navigateTo(context, 'talkToGpt', transition: TransitionType.fadeIn);
+  }
+
   void _onNewMessage() {
     _scrollController.animateTo(_scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
@@ -170,42 +181,53 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: const CupertinoNavigationBar(
-          padding: EdgeInsetsDirectional.fromSTEB(5, 0, 0, 8),
-          leading: Image(
-            alignment: Alignment.topCenter,
-            image: AssetImage('assets/images/AppIcon3.png'),
-            height: 60,
-            width: 60,
-          ),
-          middle: Text('随时GPT'),
-        ),
-        // child: Center(
-        //   child: CupertinoTextField(
-        //     controller: _textController,
-        //   ),
-        // ),
-        child: ConstrainedBox(
+        resizeToAvoidBottomInset: true,
+        navigationBar: CupertinoNavigationBar(
+            padding: EdgeInsetsDirectional.fromSTEB(5, 0, 15, 8),
+            leading: Row(
+              children: [
+                Image(
+                  alignment: Alignment.topCenter,
+                  image: AssetImage('assets/images/AppIcon3.png'),
+                  height: 60,
+                  width: 60,
+                ),
+                Text(
+                  '随时GPT',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+            trailing: Container(
+              width: 50.sp,
+              padding:  EdgeInsets.all(3),
+              child: CupertinoButton(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(25.0),
+                ),
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(2),
+                color: CupertinoColors.activeGreen,
+                child: const Text(
+                  '订阅',
+                  style: TextStyle(color: Colors.white,fontSize: 14),
+                ),
+                onPressed: () {
+                  _sendMsgToGpt();
+                },
+              ),
+            )
+            // middle: Text('随时GPT'),
+            ),
+        child: Container(
+            child: ConstrainedBox(
           constraints: const BoxConstraints.expand(),
           child: Stack(
             children: [
               Positioned(
-                height: MediaQuery.of(context).size.height - 160.sp,
-                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.sizeOf(context).height - 160.sp,
+                width: MediaQuery.sizeOf(context).width,
                 bottom: 60 + bottomSideH,
-                // child: ListView.builder(
-                //   key: UniqueKey(),
-                //   reverse: true,
-                //   padding: EdgeInsets.all(10.sp),
-                //   itemCount: _messageList.length,
-                //   itemBuilder: (BuildContext context, int index) {
-                //     return getReceiverView(
-                //         ChatBubbleClipper1(type: BubbleType.sendBubble),
-                //         context,
-                //         _messageList[index]["msg"],
-                //         index);
-                //   },
-                // ),
                 child: ListView(
                   reverse: true,
                   controller: _scrollController,
@@ -218,15 +240,17 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
                   height: 50.sp,
                   child: Container(
                     color: backColoor,
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery.sizeOf(context).width,
                     height: 52.sp,
                   )),
+
               Positioned(
                   bottom: bottomSideH,
                   child: Container(
+                    // duration: Duration(seconds: 1),
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
                     color: backColoor,
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery.sizeOf(context).width,
                     height: 52.sp,
                     child: Stack(
                       children: [
@@ -292,43 +316,74 @@ class _CupertinoTextFieldExampleState extends State<messageWindow> {
               //是否显示加载动画
               dialogVisable
                   ? Positioned(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.sizeOf(context).height,
+                      width: MediaQuery.sizeOf(context).width,
                       bottom: 0,
                       child: Container(
-                          height: MediaQuery.of(context).size.height,
-                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.sizeOf(context).height,
+                          width: MediaQuery.sizeOf(context).width,
                           child: Center(
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  // border: Border.all(width: 1,color: Color(0x20111111)),
-                                  // boxShadow: [
-                                  //   BoxShadow(
-                                  //     color: Color.fromARGB(10, 0, 0, 0),
-                                  //     offset: new Offset(0, 0),
-                                  //     blurRadius: 5,
-                                  //   )
-                                  // ],
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5.0),
+                            // child: Container(
+                            //     decoration: BoxDecoration(
+                            //       // border: Border.all(width: 1,color: Color(0x20111111)),
+                            //       // boxShadow: [
+                            //       //   BoxShadow(
+                            //       //     color: Color.fromARGB(10, 0, 0, 0),
+                            //       //     offset: new Offset(0, 0),
+                            //       //     blurRadius: 5,
+                            //       //   )
+                            //       // ],
+                            //       borderRadius: BorderRadius.all(
+                            //         Radius.circular(5.0),
+                            //       ),
+                            //       color: Color(0xCFEBF1F6),
+                            //     ),
+                            //     width: 135.sp,
+                            //     height: 135.sp,
+                            //     padding: EdgeInsets.all(30.sp),
+                            //     child:
+                            //         Lottie.asset('assets/status/LoopEggs.json',
+                            //             // alignment: Alignment(10,0),
+                            //             width: 45.sp,
+                            //             height: 45.sp,
+                            //             repeat: true)),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5.0),
+                              ),
+                              //背景过滤器
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
+                                child: Opacity(
+                                  opacity: 0.9,
+                                  child: Container(
+                                    width: 135.sp,
+                                    height: 135.sp,
+                                    padding: EdgeInsets.all(1.sp),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xE3DEE1E4),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0),
+                                      ),
+                                    ),
+                                    child: Center(
+                                        child: Lottie.asset(
+                                            'assets/status/loading_emo.json',
+                                            // alignment: Alignment(10,0),
+                                            width: 90.sp,
+                                            height: 90.sp,
+                                            repeat: true)),
                                   ),
-                                  color: Color(0x0D111111),
                                 ),
-                                width: 135.sp,
-                                height: 135.sp,
-                                padding: EdgeInsets.all(30.sp),
-                                child:
-                                    Lottie.asset('assets/status/LoopEggs.json',
-                                        // alignment: Alignment(10,0),
-                                        width: 45.sp,
-                                        height: 45.sp,
-                                        repeat: true)),
+                              ),
+                            ),
                           ),
                           color: Color(0x00C1CDE1)),
                     )
                   : Container()
             ],
           ),
-        ));
+        )));
   }
 }

@@ -79,7 +79,7 @@ getReceiverView(CustomClipper clipper, BuildContext context, String msg,
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.7,
         ),
-        child: Row(children: [
+        child: Column(children: [
           isHistoryMsg
               ? Container(
                   key: ValueKey(index),
@@ -91,7 +91,7 @@ getReceiverView(CustomClipper clipper, BuildContext context, String msg,
                     animatedTexts: [
                       TypewriterAnimatedText(
                         msg,
-                        speed: const Duration(milliseconds: 100),
+                        speed: const Duration(milliseconds: 25),
                         textStyle: const TextStyle(
                             fontSize: 16,
                             color: Colors.black,
@@ -103,14 +103,13 @@ getReceiverView(CustomClipper clipper, BuildContext context, String msg,
                   ))
               : Container(
                   key: ValueKey(index),
-                  
                   constraints: BoxConstraints(
                     maxWidth: MediaQuery.of(context).size.width * 0.7,
                   ),
                   child: Text(
                     msg,
                     style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 19,
                         color: Colors.black,
                         decoration: TextDecoration.none,
                         fontWeight: FontWeight.normal),

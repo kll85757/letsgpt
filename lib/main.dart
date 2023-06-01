@@ -26,7 +26,8 @@ Future<void> main() async {
       // DeviceOrientation.landscapeRight,
     ],
   );
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);
+  //这行代码用于隐藏状态栏
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);
   // ScreenUtil.instance = ScreenUtil(width: 750, height: 1334);
   runApp(MyApp());
 }
@@ -102,7 +103,7 @@ class ListState extends State<HomePage> {
     var _duration = new Duration(seconds: 1);
     new Timer(_duration, () {
       // 空等1秒之后再计时
-      _timer = new Timer.periodic(const Duration(milliseconds: 100), (v) {
+      _timer = new Timer.periodic(const Duration(milliseconds: 400), (v) {
         count--;
         if (count == 0) {
           // Navigator.pushNamed(context, '/welcome');

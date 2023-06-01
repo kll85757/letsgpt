@@ -14,7 +14,7 @@ var welcomeHandler = Handler(
   },
 );
 
-// 检索页
+// GPT对话页
 var talkToGptHandler = Handler(
   handlerFunc: (BuildContext, Map<String, List<String>> params) {
     return messageWindow();
